@@ -1,31 +1,36 @@
 # Dataset Analysis Toolkit
 
-A Python-based toolkit for analyzing and profiling large-scale intent and company datasets. Provides automated data quality assessment, schema validation, and summary reporting.
+A Python-based toolkit for analyzing and profiling large-scale intent and company datasets. Provides automated data quality assessment, relationship validation, and comprehensive reporting.
 
 ## Overview
 
-This toolkit processes CSV datasets containing company information, intent signals, contact data, and keyword mappings. It generates comprehensive reports on data quality, coverage, and temporal distribution.
+This toolkit processes CSV datasets containing company information, intent signals, contact data, and keyword mappings. It generates comprehensive reports on data relationships, quality metrics, and coverage analysis.
 
 ## Features
 
+- **Relationship Analysis**: Validates foreign key relationships and referential integrity
+- **Data Quality Assessment**: Identifies null values, type mismatches, and coverage gaps  
 - **Automated Data Profiling**: Analyzes file structure, data types, and basic statistics
-- **Schema Validation**: Compares actual data types against expected schemas
-- **Data Quality Assessment**: Identifies null values, type mismatches, and coverage gaps
 - **Sample Generation**: Creates manageable subsets of large datasets for testing
 - **Markdown Reporting**: Generates formatted summary reports
 
 ## Scripts
 
-### `analyze_datasets.py`
-Main analysis engine that processes all CSV files in a directory and generates detailed statistics.
+### `relationship_analyzer.py`
+Primary analysis engine that validates relationships across datasets and generates detailed quality metrics.
 
-**Key Metrics:**
-- Row and column counts
-- File sizes and memory usage
-- Null value analysis
-- Data type validation
-- Unique value counts for key identifiers
-- Temporal coverage analysis
+**Key Capabilities:**
+- Foreign key relationship validation with integrity percentages
+- Data coverage analysis across all columns
+- Null value identification and quality scoring
+- Automated output generation to `private/analysis/`
+
+**Output Files:**
+- `relationship_analysis.csv` - Foreign key relationship metrics
+- `data_coverage_analysis.csv` - Column-level data quality statistics
+
+### `analyze_datasets.py`
+Legacy analysis script for basic dataset profiling and statistics generation.
 
 ### `sampler.py`
 Creates sample datasets for development and testing purposes.
@@ -47,19 +52,25 @@ The toolkit handles several dataset categories:
 ## Usage
 
 1. Place CSV files in `private/datasets/` directory
-2. Run analysis: `python analyze_datasets.py`
+2. Run relationship analysis: `python relationship_analyzer.py`
 3. Generate samples: `python sampler.py`
-4. Review generated `data_summary.md` report
+4. Review generated reports in `private/analysis/`
 
-## Output
+## File Structure
 
-The analysis generates a comprehensive markdown report including:
-
-- Overview table with key metrics
-- Data coverage statistics
-- Data quality issues identification
-- Temporal coverage analysis
-- Summary statistics across all datasets
+```
+.
+├── README.md
+├── analyze_datasets.py
+├── data_summary.md
+├── relationship_analyzer.py
+├── sampler.py
+└── private/
+    ├── analysis/
+    ├── datasets/
+    ├── oracle/
+    └── samples/
+```
 
 ## Requirements
 
@@ -68,14 +79,12 @@ The analysis generates a comprehensive markdown report including:
 - numpy
 - pathlib
 
-## File Structure
+## Key Insights
 
-```
-├── README.md
-├── analyze_datasets.py
-├── sampler.py
-├── data_summary.md
-└── private/
-    ├── datasets/          # Source CSV files
-    └── samples/          # Generated sample files
-```
+The relationship analyzer identifies:
+- **Strong relationships** (>80% referential integrity) for core business flow
+- **Broken relationships** (≤80% integrity) requiring attention
+- **Data quality issues** across all columns with null percentage analysis
+- **Coverage gaps** and type validation across datasets
+
+Perfect integrity found in core intent flow: keywords → companies → contacts → intent scores.
