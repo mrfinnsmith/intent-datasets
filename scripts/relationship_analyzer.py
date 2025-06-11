@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Dataset Relationship Analyzer for Demandbase Files
+Dataset Relationship Analyzer for Intent Files
 Analyzes foreign key relationships and data integrity across CSV files
 """
 
@@ -11,7 +11,7 @@ import json
 from collections import defaultdict
 
 
-def load_datasets(data_dir="private/datasets"):
+def load_datasets(data_dir="../private/data/raw"):
     """Load all CSV files from the datasets directory"""
     datasets = {}
     data_path = Path(data_dir)
@@ -206,7 +206,7 @@ def generate_report(datasets, fk_results, coverage_results):
     """Generate comprehensive analysis report"""
 
     print("\n" + "=" * 80)
-    print("DEMANDBASE DATASET RELATIONSHIP ANALYSIS")
+    print("DATASET RELATIONSHIP ANALYSIS")
     print("=" * 80)
 
     # Dataset summary
@@ -274,7 +274,7 @@ def generate_report(datasets, fk_results, coverage_results):
 
 def setup_output_directory():
     """Create output directory and clean previous results"""
-    output_dir = Path("private/analysis")
+    output_dir = Path("../private/analysis")
 
     # Create directory if it doesn't exist
     output_dir.mkdir(parents=True, exist_ok=True)

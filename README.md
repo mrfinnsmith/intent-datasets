@@ -1,10 +1,10 @@
 # Dataset Analysis Toolkit
 
-A Python-based toolkit for analyzing and profiling large-scale intent and company datasets. Provides automated data quality assessment, relationship validation, and comprehensive reporting.
+A Python-based toolkit for analyzing and profiling large-scale intent and company datasets. Provides automated data quality assessment, relationship validation, and comprehensive reporting with SQLite database support.
 
 ## Overview
 
-This toolkit processes CSV datasets containing company information, intent signals, contact data, and keyword mappings. It generates comprehensive reports on data relationships, quality metrics, and coverage analysis.
+This toolkit processes CSV datasets containing company information, intent signals, contact data, and keyword mappings. It generates comprehensive reports on data relationships, quality metrics, and coverage analysis with local database capabilities for advanced querying.
 
 ## Features
 
@@ -12,6 +12,7 @@ This toolkit processes CSV datasets containing company information, intent signa
 - **Data Quality Assessment**: Identifies null values, type mismatches, and coverage gaps  
 - **Automated Data Profiling**: Analyzes file structure, data types, and basic statistics
 - **Sample Generation**: Creates manageable subsets of large datasets for testing
+- **SQLite Database**: Local database setup for SQL querying and analysis
 - **Markdown Reporting**: Generates formatted summary reports
 
 ## Scripts
@@ -28,6 +29,15 @@ Primary analysis engine that validates relationships across datasets and generat
 **Output Files:**
 - `relationship_analysis.csv` - Foreign key relationship metrics
 - `data_coverage_analysis.csv` - Column-level data quality statistics
+
+### `sqlite_setup.py`
+Creates and populates a local SQLite database from CSV datasets for SQL-based analysis.
+
+**Key Capabilities:**
+- Imports all CSV files into structured database tables
+- Creates indexes on key fields for performance
+- Enables complex SQL queries and joins
+- Stores database in `private/data/database/intent-data.db`
 
 ### `analyze_datasets.py`
 Legacy analysis script for basic dataset profiling and statistics generation.
@@ -51,40 +61,87 @@ The toolkit handles several dataset categories:
 
 ## Usage
 
-1. Place CSV files in `private/datasets/` directory
-2. Run relationship analysis: `python relationship_analyzer.py`
-3. Generate samples: `python sampler.py`
-4. Review generated reports in `private/analysis/`
+### Initial Setup
+1. Place CSV files in `private/data/raw/` directory
+2. Install dependencies: `pandas`, `numpy`, `sqlite3`
+
+### Database Setup
+```bash
+cd scripts
+python sqlite_setup.py
+```
+This creates `private/data/database/intent-data.db` with all CSV data imported.
+
+### Analysis Workflows
+```bash
+cd scripts
+
+# Run relationship analysis
+python relationship_analyzer.py
+
+# Generate samples
+python sampler.py
+
+# Basic profiling
+python analyze_datasets.py
+```
+
+### Querying the Database
+```python
+import sqlite3
+import pandas as pd
+
+conn = sqlite3.connect('../private/data/database/intent-data.db')
+
+# High-intent contacts
+result = pd.read_sql("""
+    SELECT c.company_name, co.first_name, co.title, cs.intent_score
+    FROM companies c
+    JOIN contacts co ON c.company_id = co.company_id  
+    JOIN contact_intent_scores cs ON co.employment_id = cs.employment_id
+    WHERE cs.intent_score > 80
+    ORDER BY cs.intent_score DESC
+""", conn)
+
+conn.close()
+```
+
+### Review Reports
+- Analysis outputs: `private/analysis/`
+- Generated reports: `data_summary.md`
 
 ## File Structure
 
 ```
-.
 ├── README.md
-├── analyze_datasets.py
 ├── data_summary.md
-├── relationship_analyzer.py
-├── sampler.py
+├── scripts/
+│   ├── analyze_datasets.py
+│   ├── relationship_analyzer.py
+│   ├── sampler.py
+│   └── sqlite_setup.py
 └── private/
-    ├── analysis/
-    ├── datasets/
-    ├── oracle/
-    └── samples/
+    └── data/
+        ├── raw/           # CSV datasets
+        ├── samples/       # Sample data
+        └── database/      # SQLite database
 ```
+
+## Database Tables
+
+The SQLite database contains the following tables:
+- `keyword_sets` - Keyword set definitions
+- `keyword_set_keywords` - Individual keywords per set
+- `companies` - Company data (eligible for intent tracking)
+- `companies_full` - Full company hierarchy data
+- `contacts` - Contact information and profiles
+- `company_intent_geo` - Geographic intent signals by company
+- `contact_intent_scores` - Person-level intent scores (1-100)
 
 ## Requirements
 
 - Python 3.x
 - pandas
 - numpy
+- sqlite3 (included with Python)
 - pathlib
-
-## Key Insights
-
-The relationship analyzer identifies:
-- **Strong relationships** (>80% referential integrity) for core business flow
-- **Broken relationships** (≤80% integrity) requiring attention
-- **Data quality issues** across all columns with null percentage analysis
-- **Coverage gaps** and type validation across datasets
-
-Perfect integrity found in core intent flow: keywords → companies → contacts → intent scores.

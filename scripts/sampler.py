@@ -4,13 +4,13 @@ import shutil
 from pathlib import Path
 
 # Clear and create samples directory
-samples_dir = Path("private/samples")
+samples_dir = Path("../private/data/samples")
 if samples_dir.exists():
     shutil.rmtree(samples_dir)
-samples_dir.mkdir()
+samples_dir.mkdir(parents=True)
 
 # Get all CSV files from datasets directory
-datasets_dir = Path("private/datasets")
+datasets_dir = Path("../private/data/raw")
 csv_files = list(datasets_dir.glob("*.csv"))
 
 for csv_file in csv_files:

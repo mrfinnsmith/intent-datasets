@@ -60,7 +60,7 @@ SCHEMAS = {
 }
 
 
-def analyze_csv_files(directory="private/datasets"):
+def analyze_csv_files(directory="../private/data/raw"):
     results = []
 
     # Get all CSV files
@@ -141,7 +141,7 @@ def analyze_csv_files(directory="private/datasets"):
     return results
 
 
-def generate_markdown_report(results, output_file="data_summary.md"):
+def generate_markdown_report(results, output_file="../data_summary.md"):
     with open(output_file, "w") as f:
         f.write("# Dataset Summary Statistics\n\n")
         f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
@@ -217,4 +217,4 @@ def generate_markdown_report(results, output_file="data_summary.md"):
 if __name__ == "__main__":
     results = analyze_csv_files()
     generate_markdown_report(results)
-    print("\nReport generated: data_summary.md")
+    print("\nReport generated: ../data_summary.md")
